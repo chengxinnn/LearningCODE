@@ -1,13 +1,12 @@
 # malloc
 
-```C++
+```cpp
 #ifndef SECUREC_MALLOC
 #define SECUREC_MALLOC(x) malloc((size_t)(x))
 #endif#ifndef SECUREC_FREE
 #define SECUREC_FREE(x) free((void *)(x))
 #endif
 ```
-
 
 ```C++
 void *DmsdpMalloc(int32_t moduleId, uint32_t size)
@@ -43,3 +42,5 @@ void *DmsdpMalloc(int32_t moduleId, uint32_t size)
     return memBuf;
 }
 ```
+
+---

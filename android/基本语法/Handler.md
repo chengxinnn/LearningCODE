@@ -1,10 +1,6 @@
 # Handler
 
-
-
 [https://blog.csdn.net/ly0724ok/article/details/117324053/](https://blog.csdn.net/ly0724ok/article/details/117324053/)
-
-
 
 1. 简介
    Handler是一套 Android 消息传递机制,主要用于线程间通信。
@@ -114,62 +110,7 @@ public class HandlerActivity extends AppCompatActivity {
     }
 }
 
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39
-40
-41
-42
-43
-44
-45
-46
-47
-48
-49
-50
-51
-52
-53
-54
-55
-56
+
 3.2 Message 获取
 获取 Message 大概有如下几种方式：
 
@@ -185,12 +126,6 @@ public final Message obtainMessage()
 {
     return Message.obtain(this);
 }
-
-1
-2
-3
-4
-5
 通过查看 Message 的 obtain 方法
 
 public static Message obtain(Handler h) {
@@ -217,30 +152,7 @@ public static Message obtain() {
         return new Message();
     }
 
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
+
 为了节省开销，我们在使用的时候尽量复用 Message，使用前两种方式进行创建。
 
 3.3 Handler 发送消息
@@ -250,10 +162,7 @@ Handler 提供了一些列的方法让我们来发送消息，如 send()系列 p
     {
        return  sendMessageDelayed(getPostMessage(r), 0);
     }
-1
-2
-3
-4
+
 不过不管我们调用什么方法，最终都会走到 MessageQueue.enqueueMessage(Message,long) 方法。
 以 sendEmptyMessage(int) 方法为例：
 
@@ -263,12 +172,7 @@ sendEmptyMessage(int)
     -> sendMessageAtTime(Message,long)
       -> enqueueMessage(MessageQueue,Message,long)
   			-> queue.enqueueMessage(Message, long);
-1
-2
-3
-4
-5
-6
+
 从中可以发现 MessageQueue 这个消息队列，负责消息的入队，出队。
 
 4. 两个实例（主线程-子线程）
@@ -276,7 +180,7 @@ sendEmptyMessage(int)
    首先我们在MainActivity中添加一个静态内部类，并重写其handleMessage方法。
 
 private static class MyHandler extends Handler {
-        private final WeakReference`<MainActivity>` mTarget;
+        private final WeakReference `<MainActivity>` mTarget;
 
     public MyHandler(MainActivity activity) {
             mTarget = new WeakReference`<MainActivity>`(activity);
@@ -299,31 +203,6 @@ private static class MyHandler extends Handler {
 
     }
  }
-
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
 然后创建一个类型为MyHandler的私有属性：
 
   private Handler handler1 = new MyHandler(this);
@@ -336,12 +215,7 @@ new Thread(new Runnable() {
                 handler1.sendEmptyMessage(0);
             }
         }).start();
-1
-2
-3
-4
-5
-6
+
 总结一下：
 
 Handler的子类对象一般是在主线程中进行创建，以便在两个线程中都能访问。我们创建了Handler类的子类MyHandler，并重写了handlerMessage方法，这个方法是当使用接收处理发送的消息的。然后我们创建了一个子线程，在子线程中我们使用MyHandler的对象调用sendEmptyMessage方法发送了一个空的Message。然后我们就能在主线程中接收到这个数据。
@@ -358,16 +232,7 @@ private static class MyHandler extends Handler {
             }
         }
     }
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
+
 声明一个Handler类型的私有变量，进行默认初始化为null。
 
  private Handler handler1;
@@ -383,15 +248,7 @@ new Thread(new Runnable() {
                 Log.e("child thread", "child thread end");
             }
         }).start();
-1
-2
-3
-4
-5
-6
-7
-8
-9
+
 在主线程中向子线程中发送消息
 
 while (handler1 == null) {
@@ -400,12 +257,7 @@ while (handler1 == null) {
 
     handler1.sendEmptyMessage(0);
         handler1.getLooper().quitSafely();
-1
-2
-3
-4
-5
-6
+
 5. Handler机制原理
 5.1 Handler原理概述
 普通的线程是没有looper的，如果需要looper对象，那么必须要先调用Looper.prepare方法，而且一个线程只能有一个looper
@@ -465,29 +317,7 @@ public class Activity extends android.app.Activity {
 	}
 }
 
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
+
 再举个例子：怎么从主线程发送消息到子线程？（虽然这种应用场景很少）
 
 Thread thread = new Thread(){
@@ -515,31 +345,7 @@ Thread thread = new Thread(){
         thread.start();
     //在主线程中发送消息
     handler.sendMessage();
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
+
 先来解释一下第一行代码Looper.prepare();，先看看Handler构造方法
 
 //空参的构造方法，这个方法调用了两个参数的构造方法
@@ -558,22 +364,7 @@ public Handler(Callback callback, boolean async) {
         mCallback = callback;
         mAsynchronous = async;
     }
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
+
 Handler的构造方法中会验证Looper，如果Looper为空，那么会抛出空指针异常
 Handler在构造方法中还做了一件事，将自己的一个全局消息队列对象（mQueue）指向了Looper中的消息队列，即构造方法中的这行代码mQueue = mLooper.mQueue;
 第二行代码初始化了Hanlder并且重写HandleMessage（）方法，没啥好讲的。
@@ -623,43 +414,7 @@ boolean enqueueMessage(Message msg, long when) {
         }
         return true;
     }
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
+
 MessageQueue是一个单向列表结构，而MessageQueue 的 enqueueMessage（）方法主要做的事情就是将 Handler发送过来的 Message插入到列表中。
 调用handler.senMessage()方法的时候，最终的结果只是将这个消息插入到了消息队列中
 发送消息的工作已经完成，那么Looper是什么时候取的消息，来看看：
@@ -676,18 +431,7 @@ public static void loop() {
             }
         }
     }
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
+
 这是一个死循环
 这个循环的目的是从MessageQueue中取出消息
 取消息的方法是MessageQueue.next()方法
@@ -709,20 +453,7 @@ public final class Message implements Parcelable {
     // sometimes we store linked lists of these things
     /*package*/ Message next;
 }
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
+
 在Looper从MessageQueue中取出Message之后，调用了Handler的dispatchMessage（）方法
 这里我们不禁要问，这个target指向了哪个Handler，再来看看之前的enqueueMessage
 //Handler的方法
@@ -733,14 +464,7 @@ public final class Message implements Parcelable {
         }
         return queue.enqueueMessage(msg, uptimeMillis);
     }
-1
-2
-3
-4
-5
-6
-7
-8
+
 第一行代码就是，将message的target属性赋值为发送message的handler自身
 Looper取出消息后，调用了发送消息的Handler的dispatchMessage（）方法，并且将message本身作为参数传了回去。到此时，代码的执行逻辑又回到了Handler中。
 接着看handler的dispatchMessage（）方法
@@ -761,22 +485,7 @@ Looper取出消息后，调用了发送消息的Handler的dispatchMessage（）�
             handleMessage(msg);
         }
     }
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
+
 看到这里面一个我们非常熟悉到方法了没有？—handleMessage（）方法，也是我们处理消息时候的逻辑。
 
 最后再来一个系统的工作示意图：
@@ -790,11 +499,7 @@ new Thread( new Runnable() {
     myView.invalidate();
     }
 }).start();
-1
-2
-3
-4
-5
+
 可以实现功能，刷新UI界面。但是这样是不行的，因为它违背了单线程模型：Android UI操作并不是线程安全的并且这些操作必须在UI线程中执行。
 
 Thread+Handler：
@@ -810,16 +515,7 @@ Handler myHandler = new Handler() {
     super.handleMessage(msg);
     }
     };
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
+
 class myThread implements Runnable {
     public void run() {
     while (!Thread.currentThread().isInterrupted()) {
@@ -836,22 +532,7 @@ class myThread implements Runnable {
     }
     }
     }
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
+
 6.2 定时器（延时操作）
 使用java：
 使用Java上自带的TimerTask类，TimerTask相对于Thread来说对于资源消耗的更低，引入import java.util.Timer; 和 import java.util.TimerTask;
@@ -874,23 +555,7 @@ public class JavaTimer extends Activity {
     }
 }
 
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
+
 TimerTask + Handler：
 
 public class TestTimer extends Activity {
@@ -924,37 +589,7 @@ public class TestTimer extends Activity {
     }
 }
 
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
+
 6.3 定时更新 UI
 Runnable + Handler.postDelayed(runnable,time)：
 
@@ -970,18 +605,7 @@ Runnable + Handler.postDelayed(runnable,time)：
 
     }
     };
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
+
 然后在其他地方调用
 
 handler.post(myRunnable);
@@ -1002,17 +626,7 @@ Runnable runnable=new Runnable() {
 	}
 };
 handler.postDelayed(runnable, 2000);
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
+
 在runnable被执行之前取消这个定时任务
 
 handler.removeCallbacks(runnable);
@@ -1058,20 +672,7 @@ main方法是整个android应用的入口，在子线程中调用Looper.prepare(
         ......
     }
 
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
+
 如果想在子线程中new Handler，则需要先手动调用Looper的prepare()方法初始化Looper，再调用Looper的loop()方法使Looper运转。
       new Thread(new Runnable() {
             @Override
@@ -1087,20 +688,7 @@ main方法是整个android应用的入口，在子线程中调用Looper.prepare(
             }
         })
 
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
+
 （5）子线程中维护的Looper，消息队列无消息的时候的处理方案是什么？
 如果不处理的话，会阻塞线程，处理方案是调用Looper的quitSafely()；
 quitSafely()会调用MessageQueue的quit()方法，清空所有的Message，并调用nativeWake()方法唤醒之前被阻塞的nativePollOnce()，使得方法next()方法中的for循环继续执行，接下来发现Message为null后就会结束循环，Looper结束。如此便可以释放内存和线程。
